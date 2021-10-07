@@ -48,6 +48,9 @@ class Shrine
 
       # Copies the file into the given location.
       def upload(io, id, move: false, **)
+        # Handle the linux kernel bug https://git.io/JwwEv
+        io.chmod(io.lstat.mode) if io.respond_to?(:lstat)
+        
         if move && movable?(io)
           move(io, path!(id))
         else
